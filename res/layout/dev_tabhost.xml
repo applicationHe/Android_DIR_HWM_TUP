@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	
+    <LinearLayout 
+	    android:id="@+id/bttonline"
+	    style="?android:attr/buttonBarStyle"
+		android:layout_width="match_parent"
+		android:layout_height="42dp"
+		android:baselineAligned="false"
+		android:orientation="horizontal"
+		android:layout_alignParentBottom="true"
+		android:background="#558FD1F3">
+		<Button
+		    android:id="@+id/button_open"
+		    android:layout_width="0dp"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:text="@string/open_btn"/>
+		<Button
+		    android:id="@+id/button_logout"
+		    android:layout_width="0dp"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:text="@string/logout_btn"/>
+	</LinearLayout>
+	
+	<TabHost
+    	android:id="@+id/tablehost"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" 
+		android:layout_alignParentTop="true"
+		android:layout_above="@id/bttonline">
+		<RelativeLayout 
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+			<TabWidget
+				android:id="@android:id/tabs"
+				android:layout_width="match_parent"
+				android:layout_height="42dp"
+				android:layout_marginBottom="2dp"/>		
+			<FrameLayout 
+			    android:id="@android:id/tabcontent"
+			    android:layout_width="match_parent" 
+			    android:layout_height="match_parent"
+			    android:layout_below="@android:id/tabs"		        
+	    		android:background="#8FD1F3">
+		    </FrameLayout>
+	    </RelativeLayout>
+	</TabHost>
+		
+</RelativeLayout>

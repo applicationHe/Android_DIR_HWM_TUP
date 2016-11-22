@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.topvs.client"
+    android:versionCode="4"
+    android:versionName="V4.1.4" >
+
+    <uses-sdk android:minSdkVersion="14" />
+
+    <application
+        android:name="com.topvs.client.MyApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name" >
+
+        <!-- android:theme="@style/titlebarstyle"> -->
+
+        <activity
+            android:name="com.topvs.client.ClientUI"
+            android:configChanges="keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.topvs.client.IPConfig"
+            android:label="@string/Act_add_dev"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.topvs.client.IPListActivity"
+            android:label="@string/Act_list_dev"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.topvs.client.DeviceListActivity"
+            android:label="@string/Act_list_chn"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.topvs.client.PlayActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/Act_play_view"
+            android:theme="@android:style/Theme.NoTitleBar" />
+        <activity
+            android:name="VideoConfig"
+            android:label="@string/Act_set_video" />
+        <activity
+            android:name="VideoEncode"
+            android:label="@string/Act_set_encode" />
+        <activity
+            android:name="com.topvs.client.RecordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.topvs.client.RecordPlayActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/Act_play_view"
+            android:theme="@android:style/Theme.NoTitleBar" />
+        <activity
+            android:name=".SelectPicPopupWindow"
+            android:theme="@style/MyDialogStyleBottom" />
+        <activity android:name="com.topvs.client.LocalRecordActivity" />
+    </application>
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+</manifest>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/LinearLayout01"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="@drawable/bg">
+
+	<ListView
+	    android:id="@+id/ipListView"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:cacheColorHint="#00000000"
+	    android:divider="#55A5DD"
+	    android:dividerHeight="2dp" />
+	
+	<!-- Button for info config -->
+	<LinearLayout
+	    style="?android:attr/buttonBarStyle"
+		android:layout_width="fill_parent"
+		android:layout_height="42dp"
+		android:orientation="horizontal"
+		android:layout_alignParentBottom="true">
+		<Button
+		    android:id="@+id/button_add"
+		    android:text="@string/add_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+			android:layout_weight="1" />
+		<Button
+		    android:id="@+id/button_cancel"
+		    android:text="@string/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+			android:layout_weight="1" />
+	</LinearLayout>
+    
+</RelativeLayout>  

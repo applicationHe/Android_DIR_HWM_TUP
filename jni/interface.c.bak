@@ -1,0 +1,888 @@
+/*
+ * Copyright (C) 2009 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+#include "clientNetlib.h"
+#include "clientNetLib_include.h"
+#include "playlist.h"
+#include "playlib.h"
+//#include "g711_cq.h"
+#include "g711.h"
+
+#include "p2p_cross.h"
+
+#include <jni.h>
+#include <string.h>
+#include <android/log.h>
+#include <android/bitmap.h>
+
+#define null 0
+#define  LOG_TAG    "interface.c"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
+int ret = 0;
+int MAX_FRAMESIZE = 1920*1080*3;
+char g_oneFrameBuf[1920*1080*3] = {0}; // 2014-04-28
+
+int data_callback(void *buf, unsigned long size_buf, void *text)
+{
+	//LOGI("--:%s",__FUNCTION__);
+	st_inputFrameListTail((char *) buf, size_buf - 32);
+	return 0;
+}
+
+int dupRecv_callback(char *pserver_ip, void *buf, int bufSize, void *context)
+{
+	//LOGI("--:%s",__FUNCTION__);
+	st_inputFrameListTail((char *) buf, bufSize - 32);
+	return 0;
+}
+
+jint Java_com_topvs_client_NetplayerAPI_initServerInfo(JNIEnv* env, jclass object, jstring ip_addr,
+		jint port,	jstring user_name, jstring userpasword, jstring cu_id, jint proto)
+{
+	int ret = initPlayer();
+	if (ret != 0)
+		return ret;
+	jboolean iscopy = JNI_TRUE;
+	const char *addr = (*env)->GetStringUTFChars(env, ip_addr, &iscopy);
+	const char *name = (*env)->GetStringUTFChars(env, user_name, &iscopy);
+	const char *pasword = (*env)->GetStringUTFChars(env, userpasword, &iscopy);
+	const char *cuid = (*env)->GetStringUTFChars(env, cu_id, &iscopy);
+	LOGI("NetplayerAPI_initServerInfo");
+	return st_net_initServerInfo(addr, port, name, pasword, cuid, proto);
+}
+
+jint Java_com_topvs_client_NetplayerAPI_deinitServerInfo(JNIEnv* env, jclass object, jint user_id)
+{
+	releasePlayer();
+	return st_net_deinitServerInfo(user_id);
+}
+
+// 设置user id对应ip等配置信息   Date: 2014-3-28 Author: yms
+jint Java_com_topvs_client_NetplayerAPI_setServerInfo(JNIEnv* env, jclass object, jint user_id,
+		jstring ip_addr, jint port, jstring user_name, jstring userpasword)
+{
+	if (0 == user_id)
+		return -1;
+
+	jboolean iscopy = JNI_TRUE;
+	const char *addr = (*env)->GetStringUTFChars(env, ip_addr, &iscopy);
+	const char *name = (*env)->GetStringUTFChars(env, user_name, &iscopy);
+	const char *pasword = (*env)->GetStringUTFChars(env, userpasword, &iscopy);
+	LOGI("NetplayerAPI_setServerInfo");
+	return st_net_setServerInfo(user_id, addr, port, name, pasword);
+}
+
+jint Java_com_topvs_client_NetplayerAPI_setVideoConfig(JNIEnv* env, jclass obj, jint user_id,
+		jint channel, jbyteArray pOutArray)
+{
+	LOGI("NetplayerAPI_setVideoConfig");
+	jbyte *byteArray = (*env)->GetByteArrayElements(env, pOutArray, 0);
+
+	video_config_t encode;
+	encode.brightness = byteArray[0];
+	encode.contrast = byteArray[1];
+	encode.hue = byteArray[2];
+	encode.saturation = byteArray[3];
+
+	int ret = set_videoPara(user_id, channel, &encode, 1);
+
+	(*env)->ReleaseByteArrayElements(env, pOutArray, byteArray, 0);
+	return ret;
+}
+
+jint Java_com_topvs_client_NetplayerAPI_setVideoEncode(JNIEnv* env, jclass obj, jint user_id,
+		jint channel, jintArray pOutArray)
+{
+	jint *intArray = (*env)->GetIntArrayElements(env, pOutArray, 0);
+
+	video_encode_t encode;
+
+	encode.video_format = intArray[0];
+	encode.resolution = intArray[1];
+	encode.bitrate_type = intArray[2];
+	encode.level = intArray[3];
+	encode.frame_rate = intArray[4];
+	encode.Iframe_interval = intArray[5];
+	encode.prefer_frame = intArray[6];
+	encode.Qp = intArray[7];
+	encode.encode_type = intArray[8];
+
+	int ret = set_videoPara(user_id, channel, &encode, 0);
+	(*env)->ReleaseIntArrayElements(env, pOutArray, intArray, 0);
+
+	return ret;
+}
+
+jint Java_com_topvs_client_NetplayerAPI_setRemoteIceInfo(JNIEnv* env, jclass object, jint user_id,
+		jstring ice_info, jint ice_size)
+{
+	jboolean isCopy = JNI_TRUE;
+	const char* iceinfo = (*env)->GetStringUTFChars(env, ice_info, &isCopy);
+	return st_net_set_iceinfo(user_id, iceinfo, ice_size);
+}
+
+jint Java_com_topvs_client_NetplayerAPI_userLogin(JNIEnv* env, jclass object, jint user_id)
+{
+	int ret = st_net_userLogin(user_id);
+	return ret;
+}
+
+jint Java_com_topvs_client_NetplayerAPI_userLogout(JNIEnv* env, jclass object, jint user_id)
+{
+	return st_net_userLogout(user_id, TRUE);
+}
+
+//add by LinZh107 2015-6-2
+jint Java_com_topvs_client_NetplayerAPI_getAllIOState(JNIEnv* env, jclass cls, jint user_id,
+		jobject obj_io)
+{
+	dev_io_control_t iodata;
+	memset(&iodata, 0, sizeof(iodata));
+	int ret = tp_net_get_io_state(user_id, &iodata);
+	if(ret < 0) //error
+		return ret;
+
+	int i = 0;
+	my_dev_io_control_t myiodata;
+	while(i < MAX_IO_INPUT_NUM && i < MAX_IO_OUTPUT_NUM)
+	{
+		myiodata.input[i] = iodata.input[i].status;
+		myiodata.output[i] = iodata.output[i].status;
+		//LOGI("iodata.input[%d].status = %0x", i, iodata.input[i].status);
+		i++;
+	}
+	//LOGI("iodata.input_num = %d, iodata.output_num = %d", iodata.input_num, iodata.output_num);
+	jbyte input_num = iodata.input_num;//有效输入总数
+	jbyte output_num = iodata.output_num;//有效输出总数
+	jbyteArray input = (*env)->NewByteArray(env, MAX_IO_INPUT_NUM);
+	jbyteArray output = (*env)->NewByteArray(env, MAX_IO_OUTPUT_NUM);
+	jintArray  timer = (*env)->NewIntArray(env, MAX_IO_OUTPUT_NUM);
+	(*env)->SetByteArrayRegion(env, input, 0, MAX_IO_INPUT_NUM, myiodata.input);
+	(*env)->SetByteArrayRegion(env, output, 0, MAX_IO_OUTPUT_NUM, myiodata.output);
+	(*env)->SetIntArrayRegion(env, timer, 0, MAX_IO_OUTPUT_NUM, myiodata.timer);
+
+	jclass io_cls = (*env)->GetObjectClass(env, obj_io);
+	if (0 == io_cls)		return -1;
+
+	jfieldID inputFieldID = (*env)->GetFieldID(env, io_cls, "input", "[B");
+	jfieldID outputFieldID = (*env)->GetFieldID(env, io_cls, "output", "[B");
+	jfieldID timerFieldID = (*env)->GetFieldID(env, io_cls, "timer", "[I");
+	jfieldID inumFieldID = (*env)->GetFieldID(env, io_cls, "input_num", "B");
+	jfieldID onumFieldID = (*env)->GetFieldID(env, io_cls, "output_num", "B");
+
+	(*env)->SetObjectField(env, obj_io, inputFieldID, input);
+	(*env)->SetObjectField(env, obj_io, outputFieldID, output);
+	(*env)->SetObjectField(env, obj_io, timerFieldID, timer);
+	(*env)->SetByteField(env, obj_io, inumFieldID, input_num);
+	(*env)->SetByteField(env, obj_io, onumFieldID, output_num);
+
+	(*env)->DeleteLocalRef(env, input);
+	(*env)->DeleteLocalRef(env, output);
+	(*env)->DeleteLocalRef(env, timer);
+
+	return ret; //return 0 while succeed!
+}
+
+//add by LinZh107 2015-6-3
+jint Java_com_topvs_client_NetplayerAPI_setAllIOState(JNIEnv* env, jclass cls, jint user_id,
+		jobject obj_io)
+{
+	//find java class
+	jclass io_cls = (*env)->GetObjectClass(env, obj_io);
+	if(io_cls == NULL)		return -1;
+
+	jfieldID inumFieldID = (*env)->GetFieldID(env, io_cls, "input_num", "B");
+	jfieldID onumFieldID = (*env)->GetFieldID(env, io_cls, "output_num", "B");
+	jfieldID inputFieldID = (*env)->GetFieldID(env, io_cls, "input", "[B");
+	jfieldID outputFieldID = (*env)->GetFieldID(env, io_cls, "output", "[B");
+	jfieldID timerFieldID = (*env)->GetFieldID(env, io_cls, "timer", "[I");
+
+	jbyte input_num = (*env)->GetByteField(env, obj_io, inumFieldID);
+	jbyte output_num = (*env)->GetByteField(env, obj_io, onumFieldID);
+	jbyteArray inputArray = (*env)->GetObjectField(env, obj_io, inputFieldID);
+	jbyteArray outputArray = (*env)->GetObjectField(env, obj_io, outputFieldID);
+	jintArray  timerArray = (*env)->GetObjectField(env, obj_io, timerFieldID);
+
+	jboolean iscopy = JNI_FALSE;
+    jbyte* input = (*env)->GetByteArrayElements(env, inputArray, &iscopy);
+    jbyte* output = (*env)->GetByteArrayElements(env, outputArray, &iscopy);
+    jbyte* timer = (*env)->GetByteArrayElements(env, timerArray, &iscopy);
+
+	dev_io_control_t iodata;
+	memset(&iodata, 0, sizeof(iodata));
+
+	int i = 0;
+	int ret = tp_net_get_io_state(user_id, &iodata);
+	if(ret < 0)		return ret;
+
+	while(i < MAX_IO_INPUT_NUM && i < MAX_IO_OUTPUT_NUM)
+	{
+		iodata.input[i].status = input[i];
+		iodata.output[i].status = output[i];
+		iodata.output[i].time = timer[i];
+		i++;
+	}
+	tp_net_set_io_state(user_id, &iodata);
+
+	(*env)->ReleaseByteArrayElements(env, inputArray, input, 0);
+	(*env)->ReleaseByteArrayElements(env, outputArray, output, 0);
+	(*env)->ReleaseByteArrayElements(env, timerArray, timer, 0);
+
+	return 0;
+}
+
+jint Java_com_topvs_client_NetplayerAPI_setIOState(JNIEnv* env, jclass cls,	jint user_id,
+		jint swindex, jboolean flags, jint sec)
+{
+	dev_io_control_t iodata;
+	memset(&iodata, 0, sizeof(iodata));
+	int ret = tp_net_get_io_state(user_id, &iodata);
+	if(ret < 0)
+		return ret;
+
+	if(flags)
+		iodata.output[swindex].status = 0x01;
+	else
+		iodata.output[swindex].status = 0x00;
+
+	LOGI("iodata.output[%d].status = %0x", swindex, iodata.output[swindex].status);
+	iodata.output[swindex].time = sec;
+
+	tp_net_set_io_state(user_id, &iodata);
+
+	return 0;
+}
+
+jint Java_com_topvs_client_NetplayerAPI_ptzControl(JNIEnv* env, jclass object, jint user_id, jint type,
+		jint channel, jint param)
+{
+	msg_ptz_control_t msg_ptz_control;
+	memset(&msg_ptz_control, 0, sizeof(msg_ptz_control));
+	msg_ptz_control.channel = channel;
+	msg_ptz_control.param = param;
+	return st_net_ptzControl(user_id, type, msg_ptz_control);
+}
+
+jint Java_com_topvs_client_NetplayerAPI_openChannelStream(JNIEnv* env, jclass object, jint user_id,
+		jint channel, jint protocol_type, jint channel_type)
+{
+	return st_net_openChannelStream(user_id, channel, protocol_type, channel_type);
+}
+
+jint Java_com_topvs_client_NetplayerAPI_isSurportSlave(JNIEnv* env, jclass object, jint user_id)
+{
+	return st_net_getIsSurportSlave(user_id);
+}
+
+/*
+ //在startChannelStream中注册data_callback
+ jint Java_com_topvs_client_NetplayerAPI_registerChannelStreamCallback( JNIEnv*  env,jclass object,jint user_id,jint channel)
+ {
+ 	 return st_net_registerChannelStreamCallback(user_id,channel,data_callback,NULL);
+ }
+ */
+jint Java_com_topvs_client_NetplayerAPI_startChannelStream(JNIEnv* env, jclass object, jint user_id,
+		jint channel, jint stream_type, jint channel_type)
+{
+	st_net_registerChannelStreamCallback(user_id, channel, data_callback, NULL);
+
+	st_initFrameList(); //初始化链表
+	LOGI("NetplayerAPI_startChannelStream!");
+	return st_net_startChannelStream(user_id, channel, stream_type, channel_type);
+}
+
+jint Java_com_topvs_client_NetplayerAPI_closeChannelStream(JNIEnv* env, jclass object, jint user_id,
+		jint channel, jint channel_type)
+{
+	return st_net_closeChannelStream(user_id, channel, channel_type);
+}
+
+jint Java_com_topvs_client_NetplayerAPI_stopChannelStream(JNIEnv* env, jclass object, jint user_id,
+		jint channel, jint stream_type, jint channel_type)
+{
+	st_destroyFrameList(); //销毁链表
+	return st_net_stopChannelStream(user_id, channel, stream_type, channel_type);
+}
+
+//add by LinZh107 2014-8-22
+jint Java_com_topvs_client_NetplayerAPI_changeStreamType(JNIEnv* env, jclass object, jint user_id,
+		jint channel, jint stream_type, jint channel_type)
+{
+	int ret = -1;
+	switch(stream_type)
+	{
+	case 0:
+		LOGI("NetplayerAPI_changeStream_type 1");
+		ret = st_net_stopChannelStream(user_id, channel, stream_type+1, channel_type);
+		if(ret != 0)
+			return -1;
+		LOGI("NetplayerAPI_changeStream_type 2");
+		ret = -1;
+		ret = st_net_startChannelStream(user_id, channel, stream_type, channel_type);
+		if(ret != 0)
+			return -2;
+		break;
+
+	case 1:
+		LOGI("NetplayerAPI_changeStream_type 3");
+		ret = st_net_stopChannelStream(user_id, channel, stream_type-1, channel_type);
+		if(ret != 0)
+			return -3;
+		LOGI("NetplayerAPI_changeStream_type 4");
+		ret = -1;
+		ret = st_net_startChannelStream(user_id, channel, stream_type, channel_type);
+		if(ret != 0)
+			return -4;
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
+//end add by LinZh107 2014-8-22
+
+
+jint Java_com_topvs_client_NetplayerAPI_defaultVidioParame(JNIEnv* env, jclass object, jint user_id, jint channel)
+{
+	return st_net_defaultVidioParame(user_id, channel);
+}
+
+//  unsigned char dis_title[8];
+//	unsigned char	brightness;    	//亮度值,范围:0-255
+//	unsigned char	contrast;		//对比度值,范围:0-255
+//	unsigned char	hue;			//色调值,范围:0-255
+//	unsigned char	saturation;		//饱和度值,范围:0-255
+
+jint Java_com_topvs_client_NetplayerAPI_getVideoConfig(JNIEnv* env, jclass obj, jint user_id, jint channel,
+		jbyteArray pOutArray)
+{
+	jbyte *byteArray = (*env)->GetByteArrayElements(env, pOutArray, 0);
+
+	video_config_t encode;
+	int ret = st_net_getVideoParam(user_id, channel, &encode);
+	if (ret == 1)
+	{
+		byteArray[0] = encode.brightness;
+		byteArray[1] = encode.contrast;
+		byteArray[2] = encode.hue;
+		byteArray[3] = encode.saturation;
+	}
+
+	(*env)->ReleaseByteArrayElements(env, pOutArray, byteArray, 0);
+	return ret;
+}
+
+jint Java_com_topvs_client_NetplayerAPI_getVideoEncode(JNIEnv* env, jclass obj, jint user_id, jint channel,
+		jint stream_type, jintArray pOutArray)
+{
+	jint *intArray = (*env)->GetIntArrayElements(env, pOutArray, 0);
+
+	video_encode_t encode;
+	int ret = st_net_getVideoEncodeParam(user_id, channel, &encode, stream_type);
+
+	if (ret == 1)
+	{
+		intArray[0] = encode.video_format;
+		intArray[1] = encode.resolution;
+		intArray[2] = encode.bitrate_type;
+		intArray[3] = encode.level;
+		intArray[4] = encode.frame_rate;
+		intArray[5] = encode.Iframe_interval;
+		intArray[6] = encode.prefer_frame;
+		intArray[7] = encode.Qp;
+		intArray[8] = encode.encode_type;
+	}
+	(*env)->ReleaseIntArrayElements(env, pOutArray, intArray, 0);
+
+	return ret;
+}
+
+jint Java_com_topvs_client_NetplayerAPI_getChannelNum(JNIEnv* env, jclass object, jint user_id)
+{
+	return st_net_getChannelNum(user_id);
+}
+
+
+jint Java_com_topvs_client_NetplayerAPI_getFrameNum(JNIEnv* env, jclass object)
+{
+	return getFrameNum(1); //返回链表中帧的个数
+}
+
+//Data: 2014-5-8  By：LinZh107 修改获取视频帧方式
+jint Java_com_topvs_client_NetplayerAPI_getVideoFrame(JNIEnv* env, jclass jobj, jintArray pOutArray, jobject bitmap)
+{
+	Hi3510_frame_t *pVideoFrame = st_getFrameListHead(VIDEO_FRAME);
+	if (pVideoFrame == NULL || pVideoFrame->data == NULL)
+	{
+		//LOGE("pVideoFrame->data == NULL");
+		return -1;
+	}
+
+	jint *intArray = (*env)->GetIntArrayElements(env, pOutArray, 0);
+	//int ScaleWidth = intArray[0], ScaleHeight = intArray[1];
+	int ret = decodeH264video(pVideoFrame->data, pVideoFrame->frame_size, pVideoFrame->frame_rate,
+			intArray, g_oneFrameBuf);
+	if (ret == 0)
+	{
+		AndroidBitmapInfo bmpinfo;
+		if (0 > AndroidBitmap_getInfo(env, bitmap, &bmpinfo))
+		{
+			LOGE("AndroidBitmap_getInfo() failed !");
+			goto error;
+		}
+
+		void* pixels;
+		if (0 > AndroidBitmap_lockPixels(env, bitmap, &pixels))
+		{
+			LOGE("AndroidBitmap_lockPixels() failed !");
+			goto error;
+		}
+
+		//RGB565_to_bmp
+		uint8_t *frameLine;
+		int nlist = 0;
+		static int size_char = sizeof(char);
+		while(nlist < bmpinfo.height)
+		{
+			if(nlist*intArray[0]*2 > MAX_FRAMESIZE*size_char)
+				break;
+			frameLine = (uint8_t *) g_oneFrameBuf + (nlist * intArray[0]*2);
+			memcpy((char*)pixels, frameLine, bmpinfo.stride/*info.width * 2*/); //RGB565要乘与2 RGB24要乘与3
+			pixels += bmpinfo.stride;
+			nlist++;
+		}
+
+		AndroidBitmap_unlockPixels(env, bitmap);
+
+		st_removeFrameListHead(VIDEO_FRAME);
+
+		(*env)->ReleaseIntArrayElements(env, pOutArray, intArray, 0);
+		return pVideoFrame->frame_rate;
+	}
+
+error:
+	(*env)->ReleaseIntArrayElements(env, pOutArray, intArray, 0);
+	st_removeFrameListHead(VIDEO_FRAME);
+	return -2;
+}
+
+#if 0
+// 更换报警类型   Date: 2014-5-22 Author: LinZh107
+jint Java_com_topvs_client_NetplayerAPI_GetdevInfo(JNIEnv* env, jclass jobj, jint channel)
+{
+	//standard C
+	ck_dev_data_t devInfo;
+	memset(&devInfo, 0, sizeof(ck_dev_data_t)); 
+	int ret = tp_net_get_DevData(&devInfo, channel); //获取报警信息
+	if (25 != ret)
+		return ret;
+
+	//native field
+	jint native_dev_id = devInfo.dev_id;
+	jbyteArray native_ck_type = (*env)->NewByteArray(env, 8);
+	jfloatArray native_ck_val = (*env)->NewByteArray(env, 32);
+	(*env)->SetByteArrayRegion(env, native_ck_type, 0, 8, devInfo.ck_type);
+	(*env)->SetFloatArrayRegion(env, native_ck_val, 0, 32, devInfo.ck_val);
+
+
+	//获取java层的当前活动类
+	jclass playCls = (*env)->FindClass(env, "com/topvs/client/DeviceListActivity");
+	if (0 == playCls)
+		return -1;
+
+	//获取java层的当前活动类里面的 ck_dev_data_t的对象dev_info
+	jfieldID devInfoID = (*env)->GetStaticFieldID(env, playCls, "dev_info", "Lcom/topvs/client/dev_ck_data_t;");
+	if (0 == devInfoID)
+		return -2;
+	//获取对象的类，用以对象的成员
+	jclass devInfoCls = (*env)->FindClass(env, "com/topvs/client/dev_ck_data_t");
+	if (0 == devInfoCls)
+		return -3;
+
+	jobject out_obj = (*env)->AllocObject(env, devInfoCls);
+	jfieldID dev_idFieldID = (*env)->GetFieldID(env, devInfoCls, "dev_id", "I");
+	jfieldID dev_typeFieldID = (*env)->GetFieldID(env, devInfoCls, "ck_type", "[B");
+	jfieldID dev_valFieldID = (*env)->GetFieldID(env, devInfoCls, "ck_val", "[F");
+
+	(*env)->SetIntField(env, out_obj, dev_idFieldID, native_dev_id);
+	(*env)->SetObjectField(env, out_obj, dev_typeFieldID, native_ck_type);
+	(*env)->SetObjectField(env, out_obj, dev_valFieldID, native_ck_val);
+	
+	(*env)->SetStaticObjectField(env, playCls, devInfoID, out_obj);
+
+	(*env)->DeleteLocalRef(env, native_ck_type);
+	(*env)->DeleteLocalRef(env, native_ck_val);
+
+	return ret;
+}
+
+#else
+// modify the jni transfer method 2015-6-3
+// 更换报警类型   Date: 2014-5-22 Author: LinZh107
+jint Java_com_topvs_client_NetplayerAPI_GetdevInfo(JNIEnv* env, jclass jobj, jint channel,
+		jobject obj_devInfo, jobject obj_alarmTime)
+{
+	//standard C
+	msg_time_t alarmTime;
+	ck_dev_data_t devInfo;
+	memset(&devInfo, 0, sizeof(ck_dev_data_t));
+	int ret = tp_net_get_DevData(channel, &devInfo, &alarmTime); //获取报警信息
+	if (25 != ret)
+		return ret;
+
+	//native field
+	jbyteArray native_ck_type = (*env)->NewByteArray(env, 8);
+	jfloatArray native_ck_val = (*env)->NewByteArray(env, 32);
+	(*env)->SetByteArrayRegion(env, native_ck_type, 0, 8, devInfo.ck_type);
+	(*env)->SetFloatArrayRegion(env, native_ck_val, 0, 32, devInfo.ck_val);
+
+	//get the owner class of the info obj, then use to get the fieldID
+	jclass devInfoCls = (*env)->GetObjectClass(env, obj_devInfo);
+	if (0 == devInfoCls)
+		return -1;
+	jfieldID dev_idFieldID = (*env)->GetFieldID(env, devInfoCls, "dev_id", "I");
+	jfieldID dev_typeFieldID = (*env)->GetFieldID(env, devInfoCls, "ck_type", "[B");
+	jfieldID dev_valFieldID = (*env)->GetFieldID(env, devInfoCls, "ck_val", "[F");
+
+	(*env)->SetIntField(env, obj_devInfo, dev_idFieldID, devInfo.dev_id);
+	(*env)->SetObjectField(env, obj_devInfo, dev_typeFieldID, native_ck_type);
+	(*env)->SetObjectField(env, obj_devInfo, dev_valFieldID, native_ck_val);
+
+
+	//get the owner class of the time obj, then use to get the fieldID
+	jclass alarmTimeCls = (*env)->GetObjectClass(env, obj_alarmTime);
+	if(0 == alarmTimeCls)
+		return -2;
+	jfieldID yearFieldID = (*env)->GetFieldID(env, alarmTimeCls, "year", "I");
+	jfieldID monthFieldID = (*env)->GetFieldID(env, alarmTimeCls, "month", "I");
+	jfieldID dayFieldID = (*env)->GetFieldID(env, alarmTimeCls, "day", "I");
+	jfieldID hourFieldID = (*env)->GetFieldID(env, alarmTimeCls, "hour", "I");
+	jfieldID minuteFieldID = (*env)->GetFieldID(env, alarmTimeCls, "minute", "I");
+	jfieldID secondFieldID = (*env)->GetFieldID(env, alarmTimeCls, "second", "I");
+
+	(*env)->SetIntField(env, obj_alarmTime, yearFieldID, alarmTime.year);
+	(*env)->SetIntField(env, obj_alarmTime, monthFieldID, alarmTime.month);
+	(*env)->SetIntField(env, obj_alarmTime, dayFieldID, alarmTime.day);
+	(*env)->SetIntField(env, obj_alarmTime, hourFieldID, alarmTime.hour);
+	(*env)->SetIntField(env, obj_alarmTime, minuteFieldID, alarmTime.minute);
+	(*env)->SetIntField(env, obj_alarmTime, secondFieldID, alarmTime.second);
+
+	(*env)->DeleteLocalRef(env, native_ck_type);
+	(*env)->DeleteLocalRef(env, native_ck_val);
+	//LOGI("NetplayerAPI_GetdevInfo");
+	return ret;
+}
+#endif
+
+//Data:2014-5-6  by:LinZh107	测试ffmpeg.so 的使用
+jint Java_com_topvs_client_NetplayerAPI_GetAvcodecVersion(JNIEnv *env, jobject obj)
+{
+    return getAvcodecVersion();
+}
+
+//2014-5-29 add_by linzh107
+jint Java_com_topvs_client_NetplayerAPI_GetAudioParam(JNIEnv *env, jobject obj, jintArray pOutArray)
+{
+	Hi3510_frame_t *pAudioFrame = st_getFrameListHead(AUDIO_FRAME);
+	if (pAudioFrame == NULL || pAudioFrame->data == NULL)
+	{
+//		LOGE("GetAudioFrame pAudioFrame->data == NULL");
+		return -2;
+	}
+	char *pAudioData = pAudioFrame->data;
+	int iPackNum = (int)(pAudioData[0] | pAudioData[1]<<8 | pAudioData[2]<<16 | pAudioData[3]<<24);
+	LOGI("GetAudioParam iPackNum = %d",iPackNum);
+	int iPackLen = (int)(pAudioData[4] | pAudioData[5]<<8 | pAudioData[6]<<16 | pAudioData[7]<<24);
+	if (iPackLen < 0 || iPackLen > HI_VOICE_MAX_FRAME_SIZE)
+		return -2;
+	int iDataLen = iPackLen - 4; //海思帧的净荷数据长度
+	LOGI("GetAudioParam iDataLen = %d",iDataLen);
+
+	jint *intArray = (*env)->GetIntArrayElements(env, pOutArray, 0);
+	intArray[0] = iPackNum;
+	intArray[1] = iDataLen;
+	(*env)->ReleaseIntArrayElements(env, pOutArray, intArray, 0);
+
+	return 0;
+}
+
+//modify 2014-5-30 LinZh107  语音解码
+jshortArray Java_com_topvs_client_NetplayerAPI_GetAudioFrame(JNIEnv *env, jobject obj, jint frame_cnt)
+{
+	Hi3510_frame_t *pAudioFrame = st_getFrameListHead(AUDIO_FRAME);
+	//LOGI("Hi3510_frame_t *pAudioFrame!");
+	if (pAudioFrame == NULL || pAudioFrame->data == NULL)
+	{
+		LOGE("GetAudioFrame pAudioFrame->data == NULL");
+		return NULL;
+	}
+	unsigned char *pAudioData = pAudioFrame->data;
+
+	int iPackNum = (int)(pAudioData[0] | pAudioData[1]<<8 | pAudioData[2]<<16 | pAudioData[3]<<24);
+//		LOGI("GetAudioFrame iPackNum=%d",iPackNum);
+	int iPackLen = (int)(pAudioData[4] | pAudioData[5]<<8 | pAudioData[6]<<16 | pAudioData[7]<<24);
+	if (iPackLen < 0 || iPackLen > HI_VOICE_MAX_FRAME_SIZE)
+		return NULL;
+
+	int iDataLen = iPackLen - 4;
+//		LOGI("GetAudioFrame iDataLen=%d",iDataLen);
+	int dataChunkLen = iPackNum * iDataLen;
+	int buffersize = dataChunkLen * frame_cnt;
+	unsigned char *bArray = malloc(buffersize);
+	int cpySize = 0;
+	int index = 0;
+	pAudioData += 12;
+	while(index < frame_cnt)
+	{
+		if((buffersize - cpySize) >= dataChunkLen && pAudioFrame != NULL)
+		{
+			int i = 0;
+			while( i < iPackNum )
+			{
+				memcpy(bArray + cpySize, pAudioData, iDataLen);
+				cpySize += iDataLen;
+				pAudioData += iDataLen + 8;
+				i++;
+			}
+
+			st_removeFrameListHead(AUDIO_FRAME);
+		}
+
+		pAudioFrame = st_getFrameListHead(AUDIO_FRAME);
+		if(pAudioFrame != NULL && pAudioFrame->data != NULL)
+		{
+			pAudioData = pAudioFrame->data;
+			pAudioData += 12;
+			index++;
+		}
+		else
+		{
+			LOGI("wait for data !");
+			usleep(10*1000);
+		}
+	}
+
+	//LOGI("sizeof(jshortArray)=%d",sizeof(jshortArray)); //4
+	//LOGI("sizeof(jshort)=%d",sizeof(jshort)); //2
+	//LOGI("sizeof(char)=%d",sizeof(char)); //1
+	int shortArrsize = cpySize;
+	jshortArray sArray = (*env)->NewShortArray(env, shortArrsize);
+	short *pArray = (short*)malloc(shortArrsize * sizeof(jshort));
+	index = 0;
+	switch (pAudioFrame->video_standard)
+	{
+	case AUDIO_FORMAT_G711A:
+		while (index < shortArrsize)
+		{
+			pArray[index] = Snack_Alaw2Lin(bArray[index]);				//g711.h
+			pArray[index] = (short) (pArray[index] >> 2);				//降噪处理
+			index++;
+		}
+		break;
+	case AUDIO_FORMAT_G711Mu:
+		while (index < shortArrsize)
+		{
+			pArray[index] = Snack_Mulaw2Lin(bArray[index]);				//g711.h
+			pArray[index] = (short) (pArray[index] >> 2);				//降噪处理
+			index++;
+		}
+		break;
+	case AUDIO_FORMAT_ADPCM:
+		while (index < shortArrsize)
+		{
+			pArray[index] = 0; //未能解码
+			index++;
+		}
+		break;
+	case AUDIO_FORMAT_G726_16:
+		while (index < shortArrsize)
+		{
+			pArray[index] = 0; //未能解码
+			index++;
+		}
+		break;
+	case AUDIO_FORMAT_AMR:
+		while (index < shortArrsize)
+		{
+			pArray[index] = 0; //未能解码
+			index++;
+		}
+		break;
+	default:
+		break;
+	}
+	
+	//	LOGI("GetAudioFrame cpySize = %d",cpySize);
+	(*env)->SetShortArrayRegion(env, sArray, 0, shortArrsize, pArray);
+
+	free(bArray);
+	free(pArray);
+	return sArray;
+}
+
+
+/*
+ * 2014-8-22 LinZh107
+ * 目的： 存储音频帧，用于分析音频帧结构
+ * 结果：已确定，废弃该 function
+ * */
+jbyteArray Java_com_topvs_client_NetplayerAPI_GetAudioFrame2(JNIEnv *env, jobject obj, jint frame_cnt)
+{
+	Hi3510_frame_t *pAudioFrame = st_getFrameListHead(AUDIO_FRAME);
+	if (pAudioFrame == NULL || pAudioFrame->data == NULL)
+	{
+		return NULL;
+	}
+	char *pAudioData = pAudioFrame->data;
+	int iPackNum = (int)(pAudioData[0] | pAudioData[1]<<8 | pAudioData[2]<<16 | pAudioData[3]<<24);
+	LOGI("GetAudioParam iPackNum = %d",iPackNum);
+	int iPackLen = (int)(pAudioData[4] | pAudioData[5]<<8 | pAudioData[6]<<16 | pAudioData[7]<<24);
+	if (iPackLen < 0 || iPackLen > HI_VOICE_MAX_FRAME_SIZE)
+		return NULL;
+	int iDataLen = iPackLen - 4;
+	LOGI("GetAudioFrame2 iDataLen = %d",iDataLen);
+	int bufferSize = iDataLen * frame_cnt * iPackNum;
+	jbyteArray bArray = (*env)->NewByteArray(env, bufferSize);
+	unsigned char* pArray = (char*)malloc(bufferSize);
+
+	int i = 0;
+	int offset = 0;
+	while(i < frame_cnt)
+	{
+		Hi3510_frame_t *pAudioFrame = st_getFrameListHead(AUDIO_FRAME);
+		//LOGI("Hi3510_frame_t *pAudioFrame!");
+		if (pAudioFrame != NULL && pAudioFrame->data != NULL)
+		{
+			unsigned char *pAudioData = pAudioFrame->data;
+			memcpy(pArray + offset, pAudioData, iDataLen);
+			offset += iDataLen;
+			st_removeFrameListHead(AUDIO_FRAME);
+			i++;
+		}
+		else usleep(5000);
+	}
+	(*env)->SetByteArrayRegion(env, bArray, 0, bufferSize, pArray);
+
+	free(pArray);
+	return bArray;
+}
+
+jint Java_com_topvs_client_NetplayerAPI_startDualTalk(JNIEnv* env, jclass object, jint user_id)
+{
+	int ret = st_net_registerTalkStreamCallback(user_id, dupRecv_callback, NULL);
+	if(ret == 0)
+	{
+		LOGI("NetplayerAPI_startDualTalk!");
+		ret = st_net_startDualTalk(user_id);
+	}
+	LOGI("st_net_startDualTalk return %d!",ret);
+	return ret;
+}
+
+jint Java_com_topvs_client_NetplayerAPI_stopDualTalk(JNIEnv* env, jclass object, jint user_id)
+{
+	return st_net_stopDualTalk(user_id);
+}
+
+jint Java_com_topvs_client_NetplayerAPI_sendVoiceData(JNIEnv *env, jobject obj, jint user_id, jshortArray VoiceArray, jint dataLen)
+{
+	jshort* sArray = (*env)->GetShortArrayElements(env, VoiceArray, 0);
+	char *pArray = malloc(dataLen);
+	memset(pArray, 0, dataLen);
+	int index = 0;
+	int ret = 0;
+	while(index < dataLen)
+	{
+		//pArray[index] = MuLaw_Decode(sArray[index]); 				//g711.h
+		pArray[index] = Snack_Lin2Alaw(sArray[index]);				//g711.h
+		//pArray[index] = Snack_Lin2Mulaw(sArray[index]);			//g711.h
+		index++;
+	}
+
+
+	/*
+	 * 创建海思音频帧结构：
+	 * 		前面4个字节是两个短型，分别是 256 和 40
+	 * 		后面就是净荷数据
+	 * 		short Hi_head[2];
+	 *		Hi_head[0] = 256;
+	 *		Hi_head[1] = 40;
+	 * 所以：
+	 * 		data_len = 4 + 80 (海思长度)
+	 * 所以
+	 * 	每次发送音频数据长度是：
+	 * 		RealLength = (data_len + 4) * num + 4;
+	 * 	其中num为 帧数
+	 * */
+	static int frameno = 0;
+	int num = dataLen / 80;
+	int data_len = 84;//(encBuffer[1]&0x00ff)*2+4;
+
+	//前面四个字节就是
+	short Hi_head[2];
+	Hi_head[0] = 256;
+	Hi_head[1] = 40;
+
+	int RealLength = (data_len + 4) * num + 4;
+
+	//while AUDIO_FORMAT_G711A
+	int audio_talk_format = 1;
+	int irate = 8000;
+	int audio_talk_width = 16;
+	int audio_amr_mode = 7;
+
+	char *sendbuf = malloc(sizeof(frame_head_t) + RealLength);
+
+	frame_head_t pframe_head;
+	pframe_head.device_type = 0;
+	pframe_head.frame_size = RealLength;
+	pframe_head.frame_no = frameno;
+	frameno++;
+	pframe_head.video_resolution = (audio_talk_format & 0x03) | (audio_amr_mode << 2);
+	pframe_head.frame_type = 3;
+	pframe_head.frame_rate = (audio_talk_width & 0x03) | (irate << 2);
+	pframe_head.video_standard= audio_talk_format;
+
+	pframe_head.sec = 0;
+	pframe_head.usec = 0;
+
+	memcpy(sendbuf, (char *)&pframe_head, sizeof(frame_head_t));
+	memcpy(&sendbuf[sizeof(frame_head_t)], (char*)&num, 4);
+	int bufoffset = sizeof(frame_head_t) + 4;
+	int cnt=0;
+	while(cnt<num)
+	{
+		memcpy(&sendbuf[bufoffset], (char*)&data_len, 4);
+		bufoffset += 4;
+		//因为	84 = data_len = (encBuffer[1]&0x00ff)*2+4;
+		//所以	有四个字节是未知
+		memcpy(&sendbuf[bufoffset], (char*)&Hi_head, 4);
+		bufoffset += 4;
+		memcpy(&sendbuf[bufoffset], (char*)&pArray[cnt * 80], 80);
+		bufoffset += 80;
+		cnt++;
+	}
+	ret = st_net_sendAudioData(user_id, sendbuf, sizeof(frame_head_t) + RealLength);
+	//LOGI("send data to pu Length = %d",ret);
+
+	(*env)->ReleaseShortArrayElements(env, VoiceArray,sArray, 0);
+	free(pArray);
+	free(sendbuf);
+	return ret;
+}

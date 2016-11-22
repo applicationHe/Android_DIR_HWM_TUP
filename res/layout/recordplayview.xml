@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/playview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#000000"
+    android:gravity="top"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/TopPanelLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/TopPanel"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:background="#43ACE3"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:background="#00000000"
+                android:src="@drawable/smallicon" />
+
+            <TextView
+                android:id="@+id/txtViewTitleBar1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/app_name"
+                android:textColor="#EEEEEE" />
+        </RelativeLayout>
+    </LinearLayout>
+
+   
+
+    <RelativeLayout
+        android:id="@+id/surfaceline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ytline"
+        android:layout_below="@id/cameranameline"
+        android:layout_marginTop="8dp"
+        android:gravity="center|center_vertical"
+        android:orientation="horizontal" >
+
+        <SurfaceView
+            android:id="@+id/SurfaceViewID"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical" />
+    </RelativeLayout>
+
+</RelativeLayout>

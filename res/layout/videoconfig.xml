@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout android:id="@+id/widget66"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
+	<TableRow android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="horizontal">
+		<TextView android:layout_width="100dip"
+			android:layout_height="wrap_content" android:text="亮度">
+		</TextView>
+		<EditText android:id="@+id/brightness" android:layout_width="120dip"
+			android:layout_height="wrap_content" android:textSize="18sp">
+		</EditText>
+	</TableRow>
+	<TableRow android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="horizontal">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="对比度">
+		</TextView>
+		<EditText android:id="@+id/contrast" android:layout_width="120dip"
+			android:layout_height="wrap_content" android:textSize="18sp">
+		</EditText>
+	</TableRow>
+	<TableRow android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="horizontal">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="色调">
+		</TextView>
+		<EditText android:id="@+id/hue" android:layout_width="120dip"
+			android:layout_height="wrap_content" android:textSize="18sp">
+		</EditText>
+	</TableRow>
+	<TableRow android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="horizontal">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="色饱和度">
+		</TextView>
+		<EditText android:id="@+id/saturation" android:layout_width="120dip"
+			android:layout_height="wrap_content" android:textSize="18sp">
+		</EditText>
+	</TableRow>
+</TableLayout>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:cb="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/TopPanelLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/TopPanel"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:background="#43ACE3"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:background="#00000000"
+                android:src="@drawable/smallicon" />
+
+            <TextView
+                android:id="@+id/txtViewTitleBar1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/app_name"
+                android:textColor="#EEEEEE" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_record_start"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="开始日期"
+            android:textColor="#000" />
+
+        <TextView
+            android:id="@+id/tv_record_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#aa000000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_record_end"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="结束日期"
+            android:textColor="#000" />
+
+        <TextView
+            android:id="@+id/tv_record_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#aa000000" />
+    </LinearLayout>
+    <Button 
+        android:id="@+id/btn_record_search"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="开始查询"
+        android:textColor="#000"
+        android:layout_gravity="center_horizontal"
+        />
+    <FrameLayout 
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp"
+        >
+	<ListView
+	    android:id="@+id/lv_record_info" 
+	    android:layout_height="match_parent"
+	    android:layout_width="match_parent"
+	    />
+	<LinearLayout 
+	    android:id="@+id/ll_record_download"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
+	    android:orientation="horizontal"
+	    android:gravity="center"
+	    android:visibility="invisible"
+	    >
+	<com.topvs.client.view.CBProgressBar
+	     android:id="@+id/cbp_download"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="15dp"
+        cb:isHorizonStroke="true"
+        cb:orientation="horizontal"
+        cb:percent_text_color="@color/percent_text_color_2"
+        cb:percent_text_size="@dimen/percent_text_size_large"
+        cb:progressBarBgColor="@color/progressbar_bg_color_1"
+        cb:progressColor="@color/progress_color_1"
+        cb:rect_round="@dimen/horizontal_corner"
+	    />
+	<Button 
+	    android:layout_width="wrap_content"
+	    android:layout_height="30dp"
+	    android:text="取消"
+	    android:onClick="cancleDownload"
+	    android:textColor="#000"
+	    android:background="@drawable/mybutton"
+	    />
+	</LinearLayout>
+
+	
+	</FrameLayout>
+</LinearLayout>

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/ipconfig"
+    android:orientation="vertical" >
+    
+	<!-- Remote Camera info -->
+    <TableLayout
+        android:id="@+id/Layout_ipConfig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+	    android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical" >
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="@string/edittext_user"
+                android:textSize="14sp"
+                android:textColor="#ffffff" />
+            <EditText
+                android:id="@+id/configusr"
+                android:layout_width="150dp"
+                android:layout_height="34dp"
+                android:singleLine="true"
+                android:hint="账户名，不能为空"
+                android:textColorHint="#afafaf"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:imeOptions="actionNext"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="@string/edittext_pwd"
+                android:textSize="14sp"
+                android:textColor="#ffffff"/>
+            <EditText
+                android:id="@+id/configpwd"
+                android:layout_width="150dp"
+                android:layout_height="34dp"
+                android:inputType="textWebPassword"
+                android:singleLine="true"
+                android:hint="账户密码，不能为空"
+                android:textColorHint="#afafaf"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:imeOptions="actionNext"/>
+        </TableRow>
+   
+        <TableRow
+            android:id="@+id/layout_tcp_ip"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="@string/edittext_addr"
+                android:textSize="14sp"
+                android:textColor="#ffffff"/>
+            <EditText
+                android:id="@+id/configip"
+                android:layout_width="150dp"
+                android:layout_height="34dp"
+                android:singleLine="true"
+                android:hint="192.168.1.101"
+                android:textColorHint="#afafaf"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:imeOptions="actionNext" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/layout_tcp_port"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="@string/edittext_port"
+                android:textSize="14sp"
+                android:textColor="#ffffff"/>
+            <EditText
+                android:id="@+id/configport"
+                android:layout_width="150dp"
+                android:layout_height="34dp"
+                android:inputType="number"
+                android:singleLine="true"
+                android:hint="5000"
+                android:textColorHint="#afafaf"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:imeOptions="actionDone"/>
+        </TableRow>
+     
+        <TableRow
+            android:id="@+id/layout_p2pid"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="@string/edittext_puid"
+                android:textSize="14sp"
+                android:textColor="#ffffff" />
+            <EditText
+                android:id="@+id/configpu_id"
+                android:layout_width="150dp"
+                android:layout_height="34dp"
+                android:singleLine="true"
+                android:hint="云设备id"
+                android:textColorHint="#afafaf"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:imeOptions="actionDone"/>
+        </TableRow>   
+ <!--         
+        <TableRow
+            android:id="@+id/layout_p2pid_hole"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >   
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="34dp"
+                android:text="" 
+                android:textSize="14sp"/> 
+		</TableRow>  
+       -->  
+    </TableLayout>
+    
+    
+    <!-- chose whether use p2p or tcp -->
+	<LinearLayout
+	    android:id="@+id/Layout_NetType"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+        android:layout_below="@id/Layout_ipConfig"
+	    android:layout_marginTop="10dp"
+	    android:layout_centerHorizontal="true"
+	    android:orientation="vertical"
+        android:background="#10000000" >
+        
+        <TextView
+            android:id="@+id/TextView_Protocol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/edittext_nettype" 
+            android:textColor="#dfdfdf"/>
+
+        <RadioGroup
+            android:id="@+id/Radio_Tcp_P2p"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/Radio_Tcp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_logintcp"/>
+            <TextView
+                android:id="@+id/ipconfig_hole1"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"/>
+            <RadioButton
+                android:id="@+id/Radio_P2p"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_loginp2p"/>
+        </RadioGroup>
+    </LinearLayout>
+    
+	
+    
+    <!-- Button for info config -->
+    <LinearLayout
+        android:id="@+id/ipconfig_btn"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="42dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/btn_save" />
+
+        <Button
+            android:id="@+id/button_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/btn_cancel" />
+    </LinearLayout>
+</RelativeLayout>

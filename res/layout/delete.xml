@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/LinearLayout01" android:orientation="vertical"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="#ffffff">
+
+
+	<LinearLayout style="@android:style/ButtonBar"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="vertical" android:layout_alignParentBottom="true">
+
+		<TextView android:id="@+id/tv_delete" android:text="@string/delete_Warn"
+			android:layout_width="wrap_content" android:layout_height="wrap_content">
+
+		</TextView>
+
+		<LinearLayout style="@android:style/ButtonBar"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<Button android:id="@+id/delete_yes" android:text="@string/btn_yes"
+				android:layout_width="0dip" android:layout_height="wrap_content"
+				android:layout_weight="1" />
+			<Button android:id="@+id/delete_no" android:text="@string/btn_cancel"
+				android:layout_width="0dip" android:layout_height="wrap_content"
+				android:layout_weight="1" />
+
+		</LinearLayout>
+	</LinearLayout>
+
+
+</RelativeLayout>  

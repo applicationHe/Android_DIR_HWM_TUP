@@ -1,0 +1,48 @@
+#
+# Copyright : TOPVS, 2014
+# Name	    : Makefile
+# Summary   : Makefile for create static lib of Linux udt_c API in arm.
+# Date      : 2014.04.10
+# Author    : liuqs 
+#
+
+#CROSS_COMPILE = arm-hisiv100nptl-linux-
+CC = ${CROSS_COMPILE}g++
+AR = ${CROSS_COMPILE}ar
+
+INCPATH = ../inc/
+LIB_PATH = ../lib/arm/
+
+
+CCFLAGS = -I${INCPATH} -DLINUX -DIA32 -g -Wall -finline-functions -O3  -static
+LDFLAGS = -L${LIB_PATH} -ludt -lstdc++ -lpthread -lm -static 
+
+
+SRC_FILES = $(shell find ./ -name "*.cpp" -print)
+OBJS_FILES = $(patsubst %.cpp, %.o, $(SRC_FILES))
+
+TAGS_INC = udtcLib.h
+TAGS_OBJ = libudtc.a
+
+all:${TAGS_OBJ}
+
+%.o: %.cpp
+	$(CC) ${CCFLAGS} $< -c
+
+${TAGS_OBJ}:${OBJS_FILES}
+	$(AR) -rc $@ $^
+	cp ${TAGS_OBJ} ../lib/pc/ -f
+	cp ${TAGS_INC} ../inc/ -f
+	
+#	cp ${TAGS_OBJ} /home/baseLib_bin/lib -f
+#	cp ${TAGS_INC} /home/baseLib_bin/inc/ -f
+
+
+
+clean:
+	rm -rf ${OBJS_FILES} ${TAGS_OBJ} ../lib/pc/${TAGS_OBJ} 
+
+
+
+
+

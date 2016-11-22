@@ -1,0 +1,13 @@
+# Package Information for pkg-config
+
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=/usr/local/lib
+includedir=/usr/local/include
+
+Name: libpjproject
+Description: Multimedia communication library
+URL: http://www.pjsip.org
+Version: 2.3.0
+Libs: -L${libdir} -lpjsua2-arm-unknown-linux-androideabi -lstdc++ -lpjsua-arm-unknown-linux-androideabi -lpjsip-ua-arm-unknown-linux-androideabi -lpjsip-simple-arm-unknown-linux-androideabi -lpjsip-arm-unknown-linux-androideabi -lpjmedia-codec-arm-unknown-linux-androideabi -lpjmedia-arm-unknown-linux-androideabi -lpjmedia-videodev-arm-unknown-linux-androideabi -lpjmedia-audiodev-arm-unknown-linux-androideabi -lpjmedia-arm-unknown-linux-androideabi -lpjnath-arm-unknown-linux-androideabi -lpjlib-util-arm-unknown-linux-androideabi  -lsrtp-arm-unknown-linux-androideabi -lresample-arm-unknown-linux-androideabi -lgsmcodec-arm-unknown-linux-androideabi -lspeex-arm-unknown-linux-androideabi -lilbccodec-arm-unknown-linux-androideabi -lg7221codec-arm-unknown-linux-androideabi  -lpj-arm-unknown-linux-androideabi -lm /mnt/volume2/ndkr10c/platforms/android-12/arch-arm/usr/lib/crtbegin_so.o -lgnustl_static  -lc -lgcc -ldl -lOpenSLES -llog
+Cflags: -I${includedir} -I/usr/local/include -DPJ_AUTOCONF=1	 -fpic -ffunction-sections -funwind-tables -no-canonical-prefixes -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb -Os -g -DNDEBUG -fomit-frame-pointer -finline-limit=64 -O0 -UNDEBUG -marm -fno-omit-frame-pointer -Ijni -DANDROID -Wa,--noexecstack -Wformat -Werror=format-security -I/mnt/volume2/ndkr10c/platforms/android-12/arch-arm/usr/include  -I/mnt/volume2/ndkr10c/sources/cxx-stl/gnu-libstdc++/4.9/include -I/mnt/volume2/ndkr10c/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi-v7a/include -DPJ_IS_BIG_ENDIAN=0 -DPJ_IS_LITTLE_ENDIAN=1

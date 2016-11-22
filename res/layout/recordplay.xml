@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recordplayview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <SurfaceView
+        android:id="@+id/SurfaceViewID2"
+        android:layout_width="fill_parent"
+        android:layout_height="240dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_horizontal" >
+
+    </SurfaceView>
+
+    <TextView
+        android:id="@+id/playinfo2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="" />
+
+  <LinearLayout
+      style="@android:style/ButtonBar"
+      android:id="@+id/btn_manu"
+      android:layout_width="fill_parent"
+      android:layout_height="48dp"
+      android:background="#00000000" 
+      android:layout_alignParentBottom="true"
+      android:orientation="horizontal" >
+
+    <Button
+        android:id="@+id/btn_stopplay"            
+		android:layout_width="wrap_content" 
+		android:layout_height="fill_parent"
+		android:layout_weight ="1"
+		android:textColor="#ffffff" 
+     	android:text="暂停" />
+	<Button 
+	    android:id="@+id/spaceholder" 
+	    android:text =""
+		android:layout_width="20dp" 
+		android:layout_height="fill_parent"
+		android:background="#00D45143"/>
+    <Button
+        android:id="@+id/btn_goback"
+        android:layout_width="wrap_content" 
+		android:layout_height="fill_parent"
+		android:layout_weight ="1"
+		android:textColor="#ffffff" 
+        android:text="开始" />
+</LinearLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout 
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent" 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<TextView 
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:text="制式"
+		android:layout_x="30dp" 
+		android:layout_y="15dp">		
+	</TextView>
+	
+	<RadioGroup 
+	    android:id="@+id/standardType"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_x="70dp" 
+		android:layout_y="0dp" 
+		android:orientation="horizontal">
+		<RadioButton 
+		    android:id="@+id/standardPal"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="PAL"></RadioButton>
+		<RadioButton 
+		    android:id="@+id/standardNTSC"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="NTSC"></RadioButton>		
+	</RadioGroup>
+
+	<TextView 
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:text="帧率"
+		android:layout_x="30dp" 
+		android:layout_y="55dp"></TextView>
+
+	<EditText
+	    android:id="@+id/frame_rate"
+	    android:layout_width="100dp"
+	    android:layout_height="32dp"
+	    android:layout_x="70dp"
+	    android:layout_y="48dp"
+	    android:textSize="18sp" >
+</EditText>
+
+	<TextView
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_x="30dp"
+	    android:layout_y="95dp"
+	    android:text="码率" >
+
+	</TextView>
+
+	<EditText
+	    android:id="@+id/level"
+	    android:layout_width="100dp"
+	    android:layout_height="32dp"
+	    android:layout_x="70dp"
+	    android:layout_y="88dp"
+	    android:textSize="18sp" >
+
+	</EditText>
+
+	<TextView 
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:text="I帧间隔"
+		android:layout_x="15dp" 
+		android:layout_y="135dp">
+	</TextView>
+
+	<EditText
+	    android:id="@+id/Iframe_interval"
+	    android:layout_width="100dp"
+	    android:layout_height="32dp"
+	    android:layout_x="70dp"
+	    android:layout_y="128dp"
+	    android:textSize="18sp" >
+
+	</EditText>
+
+	<TextView
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_x="12dp"
+	    android:layout_y="175dp"
+	    android:text="编码类型" >
+		
+	</TextView>
+	
+	<RadioGroup 
+	    android:id="@+id/encode_type"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_x="70dp" 
+		android:layout_y="160dp" 
+		android:orientation="vertical">		
+		<RadioButton 
+		    android:id="@+id/encode_typeComplex"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="复合流">
+		</RadioButton>
+		
+		<RadioButton 
+		    android:id="@+id/encode_typeVideo"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="视频流">
+		</RadioButton>
+		
+		<RadioButton 
+		    android:id="@+id/encode_typeAudio"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="音频流">
+		</RadioButton>
+		
+	</RadioGroup>
+
+</AbsoluteLayout>

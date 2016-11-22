@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GE_Client</string>
+	<string name="app_version">V4.1.4</string>
+	<string name="Act_list_dev">device list</string>
+	<string name="Act_list_chn">device control</string>
+	<string name="Act_play_view">play video</string>	
+	<string name="Act_set_video">video param</string>
+	<string name="Act_set_encode">encode param</string>
+	
+	<!-- channel activity -->
+	<string name="chn_act_channelNum">channel</string>
+	<string name="cha_act_switchNum">switch</string>
+	<string name="text_channel">Camera List</string>
+	<string name="text_switch">Switch List</string>
+	<string name="open_btn">Open</string>
+	<string name="logout_btn">Close</string>
+	<string name="refresh_btn">Get</string>
+	<string name="set_btn">Set</string>	
+	<string name="ck_num">num</string>
+	<string name="ck_time">time</string>
+	<string name="ck_dev">devices ID</string>
+	<string name="ck_value">value</string>
+	
+	<!-- ipconfig string-->	
+	<string name="Act_add_dev">add device</string>
+	<string name="edittext_user">User:</string>
+	<string name="edittext_pwd">PWD:</string>
+	<string name="edittext_addr">Addr:</string>
+	<string name="edittext_port">Port:</string>
+	<string name="edittext_puid">PUID:</string>
+	<string name="edittext_nettype">Net Type</string>
+	<string name="text_logintcp">LAN</string>
+	<string name="text_loginp2p">P2P</string>
+	<string name="btn_save">save</string>
+	
+	<!-- ip list activity -->
+	<string name="add_btn">Add Dev</string>
+	<string name="back_btn">Exit</string>
+	<string name="ipact_msg_initfailed">initialization failed！</string>
+	<string name="ipact_msg_loginfailed">login failed!</string>
+	<string name="ipact_msg_other_error">OTHER_ERROR!</string>
+	<string name="ipact_msg_error_name">ERROR_NAME!</string>
+	<string name="ipact_msg_error_pwd">ERROR_PWD!</string>
+	<string name="ipact_msg_error_right">ERROR_RIGHT!</string>
+	<string name="ipact_msg_error_channel">ERROR_CHANNEL!</string>
+	<string name="ipact_msg_error_net">NET_EXCEPTION!</string>	
+	<string name="ipact_msg_getdevfailed">get device list failed!</string>
+	<string name="ipact_msg_deletesuc">delete succeed!</string>
+	
+	<!-- play view string -->
+	<string name="play_open_ing">wait，buffering now...</string>
+	<string name="play_open_failed">loading failed！make sure the network is clear and config is right !</string>
+	
+	<string name="list_btn">device list</string>
+	<string name="exit_btn">exit</string>
+	<string name="login_btn">login</string>
+	<string name="del_btn">delete</string>
+	<string name="modify_btn">modify</string>
+	<string name="code_btn">encode parameters</string>
+	<string name="video_btn">video parameters</string>
+	<string name="tr_pal">PAL</string>
+	<string name="tr_ntsc">NTSC</string>	
+	
+	<!-- delete warning -->
+	<string name="btn_yes">yes</string>
+	<string name="btn_cancel">cancel</string>	
+	<string name="delete_Warn">Warning: Confirm delete will lost all data !</string>
+	
+	<string name="camera">camera</string>
+	<string name="measurement">MEAS</string>
+	<string name="switch_in">SW/In</string>
+	<string name="switch_out">SW/out</string>
+</resources>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/playview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="top"
+    android:background ="#000000"
+    android:orientation="vertical" >
+
+<LinearLayout
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:id="@+id/TopPanelLine"
+	android:orientation="horizontal" >
+    <RelativeLayout
+        android:id="@+id/TopPanel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="#43ACE3"
+        android:orientation="horizontal" >  	
+		<ImageButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_marginLeft ="4dp"
+			android:layout_centerVertical="true"
+			android:background="#00000000"
+			android:src="@drawable/smallicon" />	
+		<TextView 
+			android:id="@+id/txtViewTitleBar1"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:textColor="#EEEEEE"
+			android:text="@string/app_name" />			
+		<ImageButton
+		    android:id="@+id/btnHelp1"
+		    android:layout_width="70dp"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:background="#00000000"
+		    android:paddingLeft="30dp"
+		    android:src="@drawable/help" />     
+		<ImageButton
+		    android:id="@+id/btnShare1"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"       
+		    android:layout_alignLeft="@id/btnHelp1"
+		    android:layout_centerInParent="true"
+		    android:background="#00000000"
+		    android:src="@drawable/share" />          
+	</RelativeLayout>
+</LinearLayout>
+
+<!--Button
+    android:id="@+id/openAudioBTN"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:layout_below="@+id/TopPanelLine"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="4dp"    
+    android:background="#43ACE3"
+    android:textColor="#ffffff"
+    android:text=" 音频ON " /-->
+
+<LinearLayout
+    android:id="@+id/cameranameline"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/TopPanelLine"
+    android:orientation="horizontal"
+	android:layout_marginTop="7dp">
+    <TextView
+        android:id="@+id/cameraname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp" />
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp" />
+</LinearLayout>
+
+<RelativeLayout
+	android:id="@+id/surfaceline"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_above="@+id/ytline"
+	android:layout_below="@id/cameranameline"
+	android:layout_marginTop="8dp"
+	android:gravity="center|center_vertical"
+	android:orientation="horizontal" >       
+	<SurfaceView
+		android:id="@+id/SurfaceViewID"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_vertical" />
+	<TableLayout
+	    android:id="@+id/widget_layout_info"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:background="#1C1C1C"
+	    android:orientation="vertical"
+	    android:stretchColumns="*" >
+		<TextView
+		    android:id="@+id/videoInfo"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="center_vertical"
+		    android:text=""
+		    android:textSize="14sp"
+		    android:textStyle="bold" />
+		<TextView
+		    android:id="@+id/textView_channel"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="center_vertical"
+		    android:text=""
+		    android:textSize="15sp"
+		    android:textStyle="bold" /> 
+	    <TableRow
+	        android:id="@+id/alarmTable"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="1dp">
+   	        <TextView	    
+   	            android:id="@+id/alarmtextView1"
+	            android:text=""   	
+	            android:textSize="12sp"/>
+	        <TextView
+				android:id="@+id/alarmtextView2"
+	            android:text=""   	
+	            android:textSize="12sp"/>
+	        <TextView
+	            android:id="@+id/alarmtextView3"	    
+	            android:text=""   	
+	            android:textSize="12sp"/>
+       </TableRow>             
+	</TableLayout>
+</RelativeLayout>
+    
+<LinearLayout
+	android:id="@+id/ytline"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_alignParentBottom="true"
+	android:background="@drawable/ytbg2"
+	android:orientation="vertical" >
+	<RelativeLayout
+	    android:layout_marginTop ="8dp"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:orientation="horizontal" >
+		<Button
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+ 		    android:layout_toLeftOf="@+id/upbtn"
+ 		    android:background="@drawable/a1_1" />
+ 		<Button
+ 		    android:id="@+id/upbtn"
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+ 		    android:layout_toLeftOf="@+id/btn1_3"
+ 		    android:background="@drawable/a1_2" />
+		<Button
+ 		    android:id="@+id/btn1_3"
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+ 		    android:layout_toLeftOf="@+id/btn1_4"
+ 		    android:background="@drawable/a1_3" />
+ 		<Button 
+ 		    android:id="@+id/btn1_4" 
+ 		    android:background ="@drawable/a1_4"
+ 			android:layout_width="wrap_content" 
+ 			android:layout_height="wrap_content" 
+ 			android:layout_centerHorizontal="true" />
+ 		<Button 
+ 		    android:id="@+id/btn1_5" 
+ 		    android:background ="@drawable/a1_5"  
+ 			android:layout_width="wrap_content" 
+ 			android:layout_height="wrap_content"  
+ 		    android:layout_toRightOf="@id/btn1_4"/>
+ 		<Button 
+ 		    android:id="@+id/btn1_6" 
+ 		    android:background ="@drawable/a1_6" 
+	 		android:layout_width="wrap_content" 
+	 		android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/btn1_5"/>
+		<Button 
+		    android:id="@+id/btn1_7" 
+		    android:background ="@drawable/a1_6" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/btn1_6"/>     
+	</RelativeLayout>
+	  
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:orientation="horizontal" >
+		<Button
+ 		    android:id="@+id/leftbtn"
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+ 		    android:layout_toLeftOf="@+id/btn2_2"
+ 		    android:background="@drawable/a2_1" />
+ 		<Button
+ 		    android:id="@+id/btn2_2"
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+ 		    android:layout_toLeftOf="@+id/rightbtn"
+ 		    android:background="@drawable/a2_2" />
+			<Button
+ 		    android:id="@+id/rightbtn"
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+ 		    android:layout_toLeftOf="@+id/zoominbtn"
+ 		    android:background="@drawable/a2_3" />
+			<Button
+ 		    android:id="@+id/zoominbtn" 
+ 		    android:layout_centerInParent="true" 
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+ 		    android:background="@drawable/a2_4" />
+ 		<Button 
+ 		    android:id="@+id/zoomoutbtn" 
+ 		    android:background ="@drawable/a2_5"  
+ 			android:layout_width="wrap_content" 
+ 			android:layout_height="wrap_content"  
+ 		    android:layout_toRightOf="@id/zoominbtn"/>
+ 		<Button 
+ 		    android:id="@+id/audiobtn" 
+ 		    android:background ="@drawable/audio_btn" 
+	 		android:layout_width="wrap_content" 
+	 		android:layout_height="wrap_content"
+	 		android:layout_toRightOf="@id/zoomoutbtn"/>
+		<Button 
+		    android:id="@+id/recordbtn" 
+		    android:background ="@drawable/a2_7" 
+	 		android:layout_width="wrap_content" 
+	 		android:layout_height="wrap_content"
+	 		android:layout_toRightOf="@id/audiobtn"/>    
+	</RelativeLayout>
+	  
+	<RelativeLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:orientation="horizontal" >
+		<Button
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+			android:layout_toLeftOf="@+id/downbtn"
+ 		    android:background="@drawable/a3_1" />
+		<Button
+ 		    android:id="@+id/downbtn"
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+ 		    android:layout_toLeftOf="@+id/btn3_3"
+ 		    android:background="@drawable/a3_2" />
+			<Button
+ 		    android:id="@+id/btn3_3"
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+ 		    android:layout_toLeftOf="@+id/btn3_4"
+ 		    android:background="@drawable/a3_3" />
+ 		<Button android:id="@+id/btn3_4" 
+ 		    android:background ="@drawable/a3_4"
+ 		    android:layout_width="wrap_content" 
+ 		    android:layout_height="wrap_content" 
+ 		    android:layout_centerInParent="true" />
+ 		<Button android:id="@+id/btn3_5" 
+ 		    android:background ="@drawable/a3_5"  
+ 		    android:layout_width="wrap_content" 
+ 		    android:layout_height="wrap_content"  
+ 		    android:layout_toRightOf="@id/btn3_4"/>
+ 		<Button android:id="@+id/btn3_6" 
+ 		    android:background ="@drawable/a3_6" 
+	 	    android:layout_width="wrap_content" 
+	 	    android:layout_height="wrap_content"
+		    android:layout_toRightOf="@id/btn3_5"/>	
+		<Button 
+		    android:id="@+id/btn_search_record"
+		    android:background="@drawable/a3_6"
+		    android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content"
+		    android:text="查看录像"
+		    android:textColor="#000"
+		android:layout_toRightOf="@id/btn3_6"/>      
+	</RelativeLayout>
+</LinearLayout>
+    
+<RelativeLayout
+	android:id="@+id/fullscreenbar"
+	style="@android:style/ButtonBar"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:layout_alignParentBottom="true"
+	android:background="#00000000"
+	android:gravity="center"
+	android:orientation="horizontal"
+	android:visibility="gone" >
+	<Button
+	    android:id="@+id/upbtn_f"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_marginRight="15dp"
+	    android:layout_toLeftOf="@+id/downbtn_f"
+	    android:layout_weight="1"
+	    android:background="@drawable/up" />
+	<Button 
+	    android:id="@+id/downbtn_f" 
+	    android:background ="@drawable/down"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_marginRight="15dp"
+		android:layout_weight ="1" 
+		android:layout_toLeftOf="@+id/leftbtn_f"/>
+	<Button
+	    android:id="@+id/leftbtn_f"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_marginRight="15dp"
+	    android:layout_toLeftOf="@+id/rightbtn_f"
+	    android:layout_weight="1"
+	    android:background="@drawable/left" />
+	<Button
+	    android:id="@+id/rightbtn_f"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_toLeftOf="@+id/txtHide"
+	    android:layout_weight="1"
+	    android:background="@drawable/right" />
+	<TextView 
+	    android:id="@+id/txtHide" 
+	    android:layout_width="15dp" 
+		android:layout_height="1dp"  
+		android:layout_centerHorizontal="true" /> 
+	<Button
+	    android:id="@+id/zoominbtn_f"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_toRightOf="@id/txtHide"
+	    android:layout_weight="1"
+	    android:background="@drawable/zoomin" />
+	<Button 
+	    android:id="@+id/zoomoutbtn_f" 
+	    android:background ="@drawable/zoomout"  
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"  
+		android:layout_marginLeft="15dp"
+		android:layout_weight ="1" 
+		android:layout_toRightOf="@id/zoominbtn_f"/>
+	<Button 
+	    android:id="@+id/takephotobtn_f" 
+	    android:background ="@drawable/takephoto_yt" 
+	    android:layout_marginLeft="15dp"
+		android:visibility="gone"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_weight ="1" 
+		android:layout_toRightOf="@id/zoomoutbtn_f"/>
+	<Button 
+	    android:id="@+id/recordbtn_f" 
+	    android:background ="@drawable/record_yt" 
+	    android:layout_marginLeft="15dp"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:layout_weight ="1" 
+		android:layout_toRightOf="@id/takephotobtn_f"/>
+	</RelativeLayout>
+
+</RelativeLayout>
